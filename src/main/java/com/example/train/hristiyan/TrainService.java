@@ -19,15 +19,13 @@ import java.util.List;
 public class TrainService
 {
   private final TrainDao        trainDao;
-  private final TrainValidator  trainValidator;
   private final PasswordEncoder passwordEncoder;
 
 
   @Autowired
-  public TrainService(TrainDao trainDao, TrainValidator trainValidator)
+  public TrainService(TrainDao trainDao)
   {
     this.trainDao = trainDao;
-    this.trainValidator = trainValidator;
     this.passwordEncoder = new BCryptPasswordEncoder();
   }
 
@@ -95,7 +93,7 @@ public class TrainService
     BigDecimal ticketPriceWithDiscount2 = tr.getTicketPriceTwo();
 
     //Между 09:30 и 16:00ч и след 19:30 има отстъпка 5%
-      ticketPriceWithDiscount1 = discountTimeDiapason(ticketPriceWithDiscount1, tr.getGoingTime());
+    ticketPriceWithDiscount1 = discountTimeDiapason(ticketPriceWithDiscount1, tr.getGoingTime());
 
     //Ако билета е двупосочен
     if (null != tr.getGoingTimeTwo()) {

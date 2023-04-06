@@ -1,50 +1,30 @@
 package com.example.train;
+
 import com.example.train.exceptions.InvalidException;
-import org.junit.Assert;
 import com.example.train.hristiyan.TrainService;
 import com.example.train.hristiyan.dto.Train;
 import com.example.train.hristiyan.dto.TrainRequestDto;
 import com.example.train.hristiyan.dto.TrainSearchCriteria;
 import com.example.train.hristiyan.dto.User;
-import static org.junit.Assert.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Assert;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -84,8 +64,8 @@ class TrainApplicationTests
     train.setCapacity(100);
 
     mockMvc.perform(post("/svc/add-train")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(train)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(train)))
         .andExpect(status().isCreated())
         .andDo(print())
     ;
@@ -139,7 +119,7 @@ class TrainApplicationTests
     String str = "t";
 
     mockMvc.perform(get("/svc/user")
-            .queryParam("email",str.repeat(101)))
+            .queryParam("email", str.repeat(101)))
         .andExpect(status().isBadRequest())
         .andDo(print())
     ;
@@ -150,7 +130,7 @@ class TrainApplicationTests
   public void testGlobalExceptionHandler_3() throws Exception
   {
     mockMvc.perform(get("/svc/user")
-            .queryParam("email","INVALID"))
+            .queryParam("email", "INVALID"))
         .andExpect(status().isBadRequest())
         .andDo(print())
     ;
@@ -171,7 +151,7 @@ class TrainApplicationTests
   public void testLoadUserByEmail() throws Exception
   {
     mockMvc.perform(get("/svc/user")
-            .queryParam("email","hris@abv.bg"))
+            .queryParam("email", "hris@abv.bg"))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(jsonPath("$.id").value(-999))
@@ -203,14 +183,14 @@ class TrainApplicationTests
     user.setCard(User.CardType.FAMILY);
 
     mockMvc.perform(put("/svc/user")
-        .queryParam("email","ivan@abv.bg")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(user)))
+            .queryParam("email", "ivan@abv.bg")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(user)))
         .andExpect(status().isNoContent())
         .andDo(print());
 
     mockMvc.perform(get("/svc/user")
-            .queryParam("email","dancho@abv.bg"))
+            .queryParam("email", "dancho@abv.bg"))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(jsonPath("$.id").value(-998))
@@ -235,18 +215,18 @@ class TrainApplicationTests
   {
 
     TrainSearchCriteria criteria = new TrainSearchCriteria();
-    criteria.setGoingTimeFrom(LocalDateTime.of(2023,1, 1, 12, 0, 0));
-    criteria.setGoingTimeTo(LocalDateTime.of(2023,1, 1, 12, 0, 0));
-    criteria.setArriveTimeFrom(LocalDateTime.of(2023,1, 1, 14, 0, 0));
-    criteria.setArriveTimeTo(LocalDateTime.of(2023,1, 1, 14, 0, 0));
+    criteria.setGoingTimeFrom(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    criteria.setGoingTimeTo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    criteria.setArriveTimeFrom(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
+    criteria.setArriveTimeTo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     criteria.setTownFrom("TestGrad1");
     criteria.setTownTo("TestGrad2");
     criteria.setTicketPriceFrom(new BigDecimal("89.99"));
     criteria.setTicketPriceTo(new BigDecimal("99.99"));
 
     mockMvc.perform(post("/svc/get-train")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(criteria)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(criteria)))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(jsonPath("$", hasSize(2)))
@@ -264,7 +244,7 @@ class TrainApplicationTests
         .andExpect(jsonPath("$.[1].arriveTime").value("2023-01-01T14:00:00"))
         .andExpect(jsonPath("$.[1].capacity").value(99))
         .andExpect(jsonPath("$.[1].ticketPrice").value(89.99))
-        ;
+    ;
   }
 
   @Test
@@ -278,40 +258,40 @@ class TrainApplicationTests
     trainRequestDto.setId(-999);
     trainRequestDto.setTownFrom("TestGrad1");
     trainRequestDto.setTownTo("TestGrad2");
-    trainRequestDto.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto.setTwoWay(true);
     trainRequestDto.setChild(false);
 
     trainRequestDto.setIdTwo(-99);
-    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto1 = new TrainRequestDto();
     trainRequestDto1.setId(-999);
     trainRequestDto1.setTownFrom("TestGrad1");
     trainRequestDto1.setTownTo("TestGrad2");
-    trainRequestDto1.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto1.setTwoWay(true);
     trainRequestDto1.setChild(true);
 
     trainRequestDto1.setIdTwo(-99);
-    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto2 = new TrainRequestDto();
     trainRequestDto2.setId(-999);
     trainRequestDto2.setTownFrom("TestGrad1");
     trainRequestDto2.setTownTo("TestGrad2");
-    trainRequestDto2.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto2.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto2.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto2.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto2.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto2.setTwoWay(false);
@@ -382,40 +362,40 @@ class TrainApplicationTests
     trainRequestDto.setId(-999);
     trainRequestDto.setTownFrom("TestGrad1");
     trainRequestDto.setTownTo("TestGrad2");
-    trainRequestDto.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto.setTwoWay(true);
     trainRequestDto.setChild(false);
 
     trainRequestDto.setIdTwo(-99);
-    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto1 = new TrainRequestDto();
     trainRequestDto1.setId(-999);
     trainRequestDto1.setTownFrom("TestGrad1");
     trainRequestDto1.setTownTo("TestGrad2");
-    trainRequestDto1.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto1.setTwoWay(true);
     trainRequestDto1.setChild(true);
 
     trainRequestDto1.setIdTwo(-99);
-    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto2 = new TrainRequestDto();
     trainRequestDto2.setId(-999);
     trainRequestDto2.setTownFrom("TestGrad1");
     trainRequestDto2.setTownTo("TestGrad2");
-    trainRequestDto2.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto2.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto2.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto2.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto2.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto2.setTwoWay(false);
@@ -496,40 +476,40 @@ class TrainApplicationTests
     trainRequestDto.setId(-999);
     trainRequestDto.setTownFrom("TestGrad1");
     trainRequestDto.setTownTo("TestGrad2");
-    trainRequestDto.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto.setTwoWay(true);
     trainRequestDto.setChild(false);
 
     trainRequestDto.setIdTwo(-99);
-    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto1 = new TrainRequestDto();
     trainRequestDto1.setId(-999);
     trainRequestDto1.setTownFrom("TestGrad1");
     trainRequestDto1.setTownTo("TestGrad2");
-    trainRequestDto1.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto1.setTwoWay(true);
     trainRequestDto1.setChild(true);
 
     trainRequestDto1.setIdTwo(-99);
-    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto1.setGoingTimeTwo(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto1.setArriveTimeTwo(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto1.setTicketPriceTwo(new BigDecimal("99.99"));
 
     TrainRequestDto trainRequestDto2 = new TrainRequestDto();
     trainRequestDto2.setId(-999);
     trainRequestDto2.setTownFrom("TestGrad1");
     trainRequestDto2.setTownTo("TestGrad2");
-    trainRequestDto2.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    trainRequestDto2.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    trainRequestDto2.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    trainRequestDto2.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     trainRequestDto2.setTicketPrice(new BigDecimal("99.99"));
 
     trainRequestDto2.setTwoWay(false);
@@ -616,7 +596,7 @@ class TrainApplicationTests
   public void testRemoveItemFromCart() throws Exception
   {
     mockMvc.perform(delete("/svc/cart")
-        .queryParam("ticketId","-11"))
+            .queryParam("ticketId", "-11"))
         .andExpect(status().isNoContent())
         .andDo(print())
     ;
@@ -634,7 +614,7 @@ class TrainApplicationTests
   public void testOrderCart() throws Exception
   {
     mockMvc.perform(get("/svc/cart")
-        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(jsonPath("$", hasSize(1)))
@@ -657,7 +637,7 @@ class TrainApplicationTests
     ;
 
     mockMvc.perform(get("/svc/cart")
-        .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(jsonPath("$", hasSize(0)))
@@ -693,7 +673,6 @@ class TrainApplicationTests
   }
 
 
-
   @Test
   public void testDiscountTwoWay_1()
   {
@@ -704,8 +683,8 @@ class TrainApplicationTests
     dto.setGoingTimeTwo(LocalDateTime.now());
     dto.setTicketPriceTwo(new BigDecimal("20"));
 
-   BigDecimal result = trainService.discountTwoWay(dto, new BigDecimal("18.77"), new BigDecimal("18.77"));
-   Assertions.assertEquals(new BigDecimal("35.6630"),result);
+    BigDecimal result = trainService.discountTwoWay(dto, new BigDecimal("18.77"), new BigDecimal("18.77"));
+    Assertions.assertEquals(new BigDecimal("35.6630"), result);
   }
 
   @Test
@@ -715,7 +694,7 @@ class TrainApplicationTests
     dto.setTwoWay(true);
     dto.setTicketPriceTwo(new BigDecimal("20"));
 
-    Assertions.assertThrows(InvalidException.class,() -> trainService.discountTwoWay(dto, new BigDecimal("18.77"), new BigDecimal("18.77")));
+    Assertions.assertThrows(InvalidException.class, () -> trainService.discountTwoWay(dto, new BigDecimal("18.77"), new BigDecimal("18.77")));
   }
 
   @Test
@@ -726,7 +705,7 @@ class TrainApplicationTests
     dto.setTicketPriceTwo(new BigDecimal("20"));
 
     BigDecimal result = trainService.discountTwoWay(dto, new BigDecimal("18.77"), null);
-    Assertions.assertEquals(new BigDecimal("18.77"),result);
+    Assertions.assertEquals(new BigDecimal("18.77"), result);
   }
 
   @Test
@@ -740,8 +719,8 @@ class TrainApplicationTests
     dto.setArriveTime(LocalDateTime.now());
     dto.setArriveTimeTwo(LocalDateTime.now());
 
-    BigDecimal result = trainService.calculateTicketDiscounts(dto,"h.skenderski@abv.bg");
-    Assertions.assertEquals(new BigDecimal("6.890730"),result);
+    BigDecimal result = trainService.calculateTicketDiscounts(dto, "h.skenderski@abv.bg");
+    Assertions.assertEquals(new BigDecimal("6.890730"), result);
 
   }
 
@@ -755,8 +734,8 @@ class TrainApplicationTests
     dto.setArriveTime(LocalDateTime.now());
     dto.setArriveTimeTwo(LocalDateTime.now());
 
-    BigDecimal result = trainService.calculateTicketDiscounts(dto,"h.skenderski@abv.bg");
-    Assertions.assertEquals(new BigDecimal("6.890730"),result);
+    BigDecimal result = trainService.calculateTicketDiscounts(dto, "h.skenderski@abv.bg");
+    Assertions.assertEquals(new BigDecimal("6.890730"), result);
 
   }
 
@@ -770,20 +749,20 @@ class TrainApplicationTests
     dto.setId(-999);
     dto.setTownFrom("TestGrad1");
     dto.setTownTo("TestGrad2");
-    dto.setGoingTime(LocalDateTime.of(2023,1,1,12,0,0));
-    dto.setArriveTime(LocalDateTime.of(2023,1,1,14,0,0));
+    dto.setGoingTime(LocalDateTime.of(2023, 1, 1, 12, 0, 0));
+    dto.setArriveTime(LocalDateTime.of(2023, 1, 1, 14, 0, 0));
     dto.setTicketPrice(new BigDecimal("99.99"));
 
     list.add(dto);
 
-    trainService.addTicketToCart(list,"h.skenderski@abv.bg");
+    trainService.addTicketToCart(list, "h.skenderski@abv.bg");
 
   }
 
   @Test
   public void addTicketToCart_2()
   {
-    trainService.addTicketToCart(new ArrayList<>(),"h.skenderski@abv.bg");
+    trainService.addTicketToCart(new ArrayList<>(), "h.skenderski@abv.bg");
   }
 
   @Test
@@ -791,7 +770,6 @@ class TrainApplicationTests
   {
     TrainApplication.main(new String[]{});
   }
-
 
 
 }
